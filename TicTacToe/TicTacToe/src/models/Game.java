@@ -2,6 +2,7 @@ package models;
 
 import java.lang.module.ModuleDescriptor.Builder;
 import java.util.ArrayList;
+import java.util.List;
 
 import strategies.winningStrategy.WinningStrategy;
 
@@ -119,6 +120,10 @@ public class Game {
             return new Game(this);
         }
 
+    }
+
+    public void printBoard(){
+        board.printBoard();
     }
 
 }

@@ -1,5 +1,6 @@
 package models;
 
+import factories.BotPlayingStrategyFactory;
 import strategies.botPlayingStrategy.BotPlayingStrategy;
 
 public class Bot extends Player {
@@ -14,8 +15,10 @@ public class Bot extends Player {
         this.botPlayingStrategy = botPlayingStrategy;
     }
 
-    public Bot(BotDiffLevel botDiffLevel) {
+    public Bot(Symbol symbol, String name, PlayerType playerType, BotDiffLevel botDiffLevel) {
+        super(symbol,name,playerType);
         this.botDiffLevel = botDiffLevel;
+        this.botPlayingStrategy = BotPlayingStrategyFactory.getBotPlayingStrategy(botDiffLevel);
     }
 
     public BotDiffLevel getBotDiffLevel() {
