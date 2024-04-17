@@ -8,7 +8,7 @@ import strategies.winningStrategy.WinningStrategy;
 import java.util.List;
 
 public class GameController {
-    public Game startGame(int dimensions, List<Player> players, List<WinningStrategy> winningStrategies){
+    public Game startGame(int dimensions, List<Player> players, List<WinningStrategy> winningStrategies) {
         return Game.getBuilder()
                 .setDimension(dimensions)
                 .setPlayers(players)
@@ -16,15 +16,19 @@ public class GameController {
                 .build();
     }
 
-    public void makeMove(Game game){
-        //TODO
+    public void makeMove(Game game) {
+        game.makeMove();
     }
 
-    public void printBoard(Game game){
+    public void printBoard(Game game) {
         game.printBoard();
     }
 
-    public GameStatus gameStatus(Game game){
+    public GameStatus gameStatus(Game game) {
         return game.getGameStatus();
+    }
+
+    public Player getWinner(Game game) {
+        return game.getWinner();
     }
 }

@@ -16,7 +16,7 @@ public class Bot extends Player {
     }
 
     public Bot(Symbol symbol, String name, PlayerType playerType, BotDiffLevel botDiffLevel) {
-        super(symbol,name,playerType);
+        super(symbol, name, playerType);
         this.botDiffLevel = botDiffLevel;
         this.botPlayingStrategy = BotPlayingStrategyFactory.getBotPlayingStrategy(botDiffLevel);
     }
@@ -27,6 +27,11 @@ public class Bot extends Player {
 
     public void setBotDiffLevel(BotDiffLevel botDiffLevel) {
         this.botDiffLevel = botDiffLevel;
+    }
+
+    @Override
+    public Move makeMove(Board board) {
+        return botPlayingStrategy.makeMove(board);
     }
 
 }

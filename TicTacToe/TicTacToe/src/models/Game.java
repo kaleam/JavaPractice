@@ -122,8 +122,68 @@ public class Game {
 
     }
 
-    public void printBoard(){
+    public void printBoard() {
         board.printBoard();
+    }
+
+    public boolean validateMove(Move move) {
+        int row = move.getCell().getRow();
+        int col = move.getCell().getCol();
+
+        // check boundary conditions
+        if (row < 0 || row >= board.getDimension() || col < 0 || col >= board.getDimension())
+            return false;
+
+        // check if cell is not EMPTY
+        if (!board.getBoard().get(row).get(col).getCellState().equals(CellState.EMPTY))
+            return false;
+
+        return true;
+    }
+
+    public void makeMove() {
+        // call move method of Player/Bot
+        Player currentPlayer = players.get(nextPlayerIndex);
+        Move currentMove = currentPlayer.makeMove(board);
+
+        System.out.println("This is player " + currentPlayer.getName() + "'s move ");
+
+        // validate move
+        while (!validateMove(currentMove)) {
+            System.out.println("This is invalid move. Please retry the move.");
+            currentMove = currentPlayer.makeMove(board);
+        }
+
+        // update cell
+        int row = currentMove.getCell().getRow();
+        int col = currentMove.getCell().getCol();
+        Cell cell = board.getBoard().get(row).get(col);
+        cell.setCellState(CellState.FILLED);
+        cell.setPlayer(currentPlayer);
+
+        // update moves list
+        Move move = new Move(currentPlayer, cell);
+        moves.add(move);
+
+        // Update next player index
+        nextPlayerIndex = (nextPlayerIndex + 1) % players.size();
+
+        // check winner
+        if (checkWinner(move)) {
+            winner = currentPlayer;
+            gameStatus = GameStatus.ENDED;
+        } else if (moves.size() == board.getDimension() * board.getDimension()) {
+            gameStatus = GameStatus.DRAW;
+        }
+    }
+
+    private boolean checkWinner(Move move) {
+        for (WinningStrategy winningStrategy : winningStrategies) {
+            if (winningStrategy.checkWinner(board, move)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
