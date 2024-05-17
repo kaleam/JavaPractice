@@ -1,4 +1,4 @@
-package com.scaler.ecomplaceorder.dtos;
+package com.example.ecom.dtos;
 
 import lombok.Data;
 

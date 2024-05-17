@@ -1,6 +1,6 @@
-package com.scaler.ecomplaceorder.dtos;
+package com.example.ecom.dtos;
 
-import com.scaler.ecomplaceorder.models.Inventory;
+import com.example.ecom.models.Inventory;
 import lombok.Data;
 
 @Data

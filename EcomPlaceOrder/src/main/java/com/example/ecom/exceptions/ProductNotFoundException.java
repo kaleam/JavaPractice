@@ -1,4 +1,4 @@
-package com.scaler.ecomplaceorder.exceptions;
+package com.example.ecom.exceptions;
 
 public class ProductNotFoundException extends Exception{
     public ProductNotFoundException(String message) {

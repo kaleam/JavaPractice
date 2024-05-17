@@ -1,4 +1,4 @@
-package com.scaler.ecomplaceorder.models;
+package com.example.ecom.models;
 
 public enum UserType {
     ADMIN,
