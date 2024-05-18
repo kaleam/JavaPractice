@@ -1,10 +1,12 @@
 package com.example.ecom.services;
 
+import com.example.ecom.adapters.EstimateDeliveryTimeAdapter;
 import com.example.ecom.exceptions.AddressNotFoundException;
 import com.example.ecom.exceptions.ProductNotFoundException;
 import com.example.ecom.libraries.GoogleMapsApi;
 import com.example.ecom.libraries.models.GLocation;
 import com.example.ecom.models.Address;
+import com.example.ecom.models.DeliveryHub;
 import com.example.ecom.models.Product;
 import com.example.ecom.repositories.AddressRepository;
 import com.example.ecom.repositories.DeliveryHubRepository;
@@ -19,11 +21,13 @@ public class ProductServiceImpl implements ProductService {
     private ProductRepository productRepository;
     private AddressRepository addressRepository;
     private DeliveryHubRepository deliveryHubRepository;
+    private EstimateDeliveryTimeAdapter estimateDeliveryTimeAdapter;
 
-    public ProductServiceImpl(ProductRepository productRepository, AddressRepository addressRepository, DeliveryHubRepository deliveryHubRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, AddressRepository addressRepository, DeliveryHubRepository deliveryHubRepository, EstimateDeliveryTimeAdapter estimateDeliveryTimeAdapter) {
         this.productRepository = productRepository;
         this.addressRepository = addressRepository;
         this.deliveryHubRepository = deliveryHubRepository;
+        this.estimateDeliveryTimeAdapter = estimateDeliveryTimeAdapter;
     }
 
     @Override
@@ -40,31 +44,19 @@ public class ProductServiceImpl implements ProductService {
 
         // Get source address using product
         Product product = productOptional.get();
+        Address customerAddress = addressOptional.get();
         Address sellerAddress = product.getSeller().getAddress();
-        GLocation gLocationSource = new GLocation();
-        gLocationSource.setLatitude(sellerAddress.getLatitude());
-        gLocationSource.setLongitude(sellerAddress.getLongitude());
 
         // Get delivery hub address using seller address
-        Optional<Address> deliveryAddressOptional = this.deliveryHubRepository.findByAddress_ZipCode(sellerAddress.getZipCode());
-        if(deliveryAddressOptional.isEmpty()){
+        Optional<DeliveryHub> deliveryHubOptional = this.deliveryHubRepository.findByAddress_ZipCode(sellerAddress.getZipCode());
+        if(deliveryHubOptional.isEmpty()){
             throw new AddressNotFoundException("Delivery hub not found!");
         }
-        Address deliveryAddress = deliveryAddressOptional.get();
-        GLocation gLocationDeliveryHub = new GLocation();
-        gLocationDeliveryHub.setLatitude(deliveryAddress.getLatitude());
-        gLocationDeliveryHub.setLongitude(deliveryAddress.getLongitude());
+        Address hubAddress = deliveryHubOptional.get().getAddress();
 
-        // Get dest address using address
-        GLocation gLocationDest = new GLocation();
-        Address address = addressOptional.get();
-        gLocationDest.setLatitude(address.getLatitude());
-        gLocationDest.setLongitude(address.getLongitude());
-
-        // Invoke google map api to estimate delivery time
-        GoogleMapsApi googleMapsApi = new GoogleMapsApi();
-        long deliveryEstimateTimeSrcToHub = (long) googleMapsApi.estimate(gLocationSource,gLocationDeliveryHub) * 1000;
-        long deliveryEstimateTimeHubToDest = (long) googleMapsApi.estimate(gLocationDeliveryHub,gLocationDest) * 1000;
+        // Invoke estimate delivery time adapter
+        long deliveryEstimateTimeSrcToHub = this.estimateDeliveryTimeAdapter.estimate(sellerAddress.getLatitude(), sellerAddress.getLongitude(), hubAddress.getLatitude(), hubAddress.getLongitude());
+        long deliveryEstimateTimeHubToDest = this.estimateDeliveryTimeAdapter.estimate(hubAddress.getLatitude(),hubAddress.getLongitude(), customerAddress.getLatitude(), customerAddress.getLongitude());
         long totalEstimatedTime = deliveryEstimateTimeSrcToHub + deliveryEstimateTimeHubToDest + System.currentTimeMillis();
 
         // Return by converting estimated delivery time from int to Date

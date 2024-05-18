@@ -9,5 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface DeliveryHubRepository extends JpaRepository<DeliveryHub, Long> {
-    Optional<Address> findByAddress_ZipCode(String zipCode);
+    Optional<DeliveryHub> findByAddress_ZipCode(String zipCode);
 }
