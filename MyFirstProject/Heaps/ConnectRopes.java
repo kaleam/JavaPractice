@@ -5,7 +5,7 @@ import java.util.PriorityQueue;
 public class ConnectRopes {
     public static void main(String[] args) {
         PriorityQueue<Integer> pq = new PriorityQueue<>();
-        int[] A = new int[] { 5, 17, 100, 11 };
+        int[] A = new int[] { 5, 17, 100, 11, 30 };
 
         for (int i = 0; i < A.length; i++) {
             pq.add(A[i]);

@@ -7,8 +7,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 public class MergeSorter implements Callable<List<Integer>> {
-    private List<Integer> listToSort;
-    private ExecutorService executorService;
+    private final List<Integer> listToSort;
+    private final ExecutorService executorService;
 
     MergeSorter(List<Integer> listToSort, ExecutorService executorService) {
         this.listToSort = listToSort;
@@ -34,10 +34,10 @@ public class MergeSorter implements Callable<List<Integer>> {
         }
 
         // 2. Sort each list in separate threads using executor service
-        MergeSorter leftMergSorter = new MergeSorter(leftHalfList, executorService);
+        MergeSorter leftMergeSorter = new MergeSorter(leftHalfList, executorService);
         MergeSorter righMergeSorter = new MergeSorter(rightHalfList, executorService);
 
-        Future<List<Integer>> leftSortedListFuture = executorService.submit(leftMergSorter);
+        Future<List<Integer>> leftSortedListFuture = executorService.submit(leftMergeSorter);
         Future<List<Integer>> rightSortedListFuture = executorService.submit(righMergeSorter);
 
         List<Integer> leftSortedList = leftSortedListFuture.get();
