@@ -94,5 +94,7 @@ public class Main {
 
         List<List<Integer>> sorted = merged.stream().sorted((list1, list2)->list2.get(0) - list1.get(0)).collect(Collectors.toList());
 
+        int[] a = new int[10];
+        List<Integer> aList = Arrays.asList(a);
     }
 }

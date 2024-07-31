@@ -2,7 +2,6 @@ package com.example.ecom.adapters;
 
 import com.example.ecom.libraries.GoogleMapsApi;
 import com.example.ecom.libraries.models.GLocation;
-import com.example.ecom.models.Address;
 import org.springframework.stereotype.Service;
 
 @Service
